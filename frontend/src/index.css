@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.active hr{
+  @apply block
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+}
+.figma-hand {
+  font-family: 'Caveat', cursive;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
