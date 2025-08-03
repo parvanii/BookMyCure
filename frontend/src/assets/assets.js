@@ -9,6 +9,7 @@ import doc6 from '../assets/doc6.png';
 import doc7 from '../assets/doc7.png';
 import doc8 from '../assets/doc8.png';
 
+
 export const specialityData = [
   {
     speciality: 'General Physician',

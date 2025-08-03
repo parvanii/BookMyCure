@@ -4,29 +4,39 @@ import { AppContext } from '../context/AppContext';
 
 const Doctors = () => {
   const { speciality } = useParams();
+  const { doctors } = useContext(AppContext);
+  const navigate = useNavigate();
+
   const [filterDoc, setFilterDoc] = useState([]);
   const [selectedSpeciality, setSelectedSpeciality] = useState('');
-  const navigate = useNavigate();
-  const { doctors } = useContext(AppContext);
 
+  // Prepare list of specialities
   const allSpecialities = [...new Set(doctors.map((doc) => doc.speciality))];
 
-  const applyFilter = () => {
-    let activeSpeciality = selectedSpeciality || (speciality && speciality.replace(/-/g, ' ')) || '';
-    const filtered = activeSpeciality
-      ? doctors.filter((doc) => doc.speciality.toLowerCase() === activeSpeciality.toLowerCase())
-      : doctors;
-    setFilterDoc(filtered);
-  };
-
+  // Sync selectedSpeciality with URL param
   useEffect(() => {
-    applyFilter();
-  }, [speciality, doctors, selectedSpeciality]);
+    if (speciality) {
+      const decoded = decodeURIComponent(speciality).replace(/-/g, ' ');
+      setSelectedSpeciality(decoded);
+    }
+  }, [speciality]);
+
+  // Filter doctors when speciality or doctors change
+  useEffect(() => {
+    if (!selectedSpeciality) {
+      setFilterDoc(doctors);
+    } else {
+      const filtered = doctors.filter(
+        (doc) => doc.speciality.toLowerCase() === selectedSpeciality.toLowerCase()
+      );
+      setFilterDoc(filtered);
+    }
+  }, [selectedSpeciality, doctors]);
 
   return (
-    <div className="flex flex-col lg:flex-row px-6 py-10 gap-10">
-      {/* Sidebar Filter */}
-      <div className="w-full lg:w-1/5">
+    <div className="flex flex-col lg:flex-row px-6 py-10 gap-10 bg-white min-h-screen">
+      {/* Sidebar Speciality Filter */}
+      <aside className="w-full lg:w-1/5">
         <h3 className="text-xl font-semibold mb-4 text-[#6A994E]">Browse by Speciality</h3>
         <div className="flex flex-wrap lg:flex-col gap-3">
           {allSpecialities.map((spec, index) => (
@@ -42,7 +52,6 @@ const Doctors = () => {
               {spec}
             </p>
           ))}
-
           <button
             onClick={() => setSelectedSpeciality('')}
             className="mt-4 px-4 py-2 text-sm text-[#6A994E] border border-[#6A994E] rounded-md hover:bg-[#6A994E]/10 transition duration-300 shadow-sm hover:shadow-md"
@@ -50,10 +59,10 @@ const Doctors = () => {
             ✖ Clear Filter
           </button>
         </div>
-      </div>
+      </aside>
 
-      {/* Doctor Cards */}
-      <div className="w-full lg:w-4/5">
+      {/* Doctor Cards Grid */}
+      <main className="w-full lg:w-4/5">
         <h2 className="text-3xl font-semibold text-[#6A994E] mb-4">Doctors</h2>
         <p className="text-gray-600 mb-6">Browse doctors by specialisation</p>
 
@@ -66,7 +75,7 @@ const Doctors = () => {
                 className="border border-blue-200 rounded-xl cursor-pointer hover:-translate-y-2 transition-all duration-300 bg-white shadow-md"
               >
                 <img
-                  className="w-full h-60 object-cover bg-blue-50"
+                  className="w-full h-60 object-cover bg-blue-50 rounded-t-xl"
                   src={item.image}
                   alt={item.name}
                 />
@@ -81,10 +90,12 @@ const Doctors = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-500 col-span-full text-center">No doctors found for this speciality.</p>
+            <p className="text-gray-500 col-span-full text-center">
+              No doctors found for this speciality.
+            </p>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 };
