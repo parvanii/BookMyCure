@@ -11,20 +11,20 @@ const FAQ = () => {
       answer: 'You can easily book an appointment by browsing through our list of specialties, selecting a doctor, and choosing an available time slot that suits you. Our platform guides you through each step of the process.'
     },
     {
-      question: 'Is online consultation available?',
-      answer: 'Yes, many of our doctors offer online consultation services. Look for the "Online Consultation" badge on their profile, or filter your search results to find doctors who provide virtual appointments.'
+      question: 'Do I need to visit the clinic in person?',
+      answer: 'Yes, all consultations currently require you to visit the clinic physically. We do not support online consultations at the moment, but this feature is planned for future updates.'
     },
     {
-      question: 'What payment methods are accepted?',
-      answer: 'We accept various secure payment methods, including credit/debit cards, net banking, and popular digital wallets. All transactions are encrypted for your security.'
+      question: 'What payment options do you support?',
+      answer: 'Currently, we accept payments via Razorpay, which supports UPI, credit cards, and debit cards. More payment options will be added in upcoming updates.'
     },
     {
-      question: 'Can I reschedule or cancel an appointment?',
-      answer: 'Yes, you can reschedule or cancel your appointment directly from your user dashboard. Please refer to our cancellation policy for any applicable charges or notice periods.'
+      question: 'Can I cancel my appointment?',
+      answer: 'Yes, you can cancel your appointment directly from your my appointments page. Please check our cancellation policy for any applicable charges or notice periods.'
     },
     {
       question: 'How do I find a doctor for a specific condition?',
-      answer: 'You can use the "Find by Speciality" section to narrow down your search, or use the search bar to look for doctors by name, specialty, or specific medical conditions. Each doctor\'s profile provides detailed information about their expertise.'
+      answer: 'You can use the "Find by Speciality" section to narrow down your search, or use the search bar to look for doctors by name, specialty. Each doctor\'s profile provides detailed information about their expertise.'
     },
   ];
 

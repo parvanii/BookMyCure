@@ -10,6 +10,7 @@ import doc7 from '../assets/doc7.png';
 import doc8 from '../assets/doc8.png';
 
 
+
 export const specialityData = [
   {
     speciality: 'General Physician',
@@ -79,7 +80,7 @@ export const doctors = [
   },
   {
     _id: 'doc3',
-    name: 'Dr. Vihaan Desai',
+    name: '9',
     image: doc3,
     speciality: 'Cardiologist',
     degree: 'DM Cardiology',

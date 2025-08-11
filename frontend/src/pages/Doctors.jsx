@@ -11,6 +11,7 @@ const Doctors = () => {
   const [selectedSpeciality, setSelectedSpeciality] = useState('');
 
   // Prepare list of specialities
+  
   const allSpecialities = [...new Set(doctors.map((doc) => doc.speciality))];
 
   // Sync selectedSpeciality with URL param

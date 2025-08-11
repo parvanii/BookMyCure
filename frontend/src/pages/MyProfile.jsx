@@ -1,19 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AppContext } from '../context/AppContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const MyProfile = () => {
-  const [userData, setUserData] = useState({
-    name: 'Dan Joe',
-    email: 'xyz@gmail.com',
-    phone: '+91 XXXXXXXXXX',
-    address: {
-      line1: 'Lorem ipsum dolor sit amet',
-      line2: 'Lorem ipsum dolor sit amet',
-    },
-    gender: 'Male',
-    dob: '2000-01-20',
-  });
+  const { userData, setUserData, token, backendUrl, loadUserProfileData } = useContext(AppContext);
 
   const [isEdit, setIsEdit] = useState(false);
+  const [image, setImage] = useState(false);
 
   const handleChange = (field, value) => {
     if (field.includes('address')) {
@@ -33,15 +27,55 @@ const MyProfile = () => {
     }
   };
 
-  return (
+  const updateUserProfileData = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('name', userData.name);
+      formData.append('phone', userData.phone);
+      formData.append('address', JSON.stringify(userData.address));
+      formData.append('gender', userData.gender);
+      formData.append('dob', userData.dob);
+      if (image) formData.append('image', image);
+
+      const { data } = await axios.post(
+        `${backendUrl}/api/user/update-profile`,
+        formData,
+        { headers: { token } }
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        await loadUserProfileData();
+        setIsEdit(false);
+        setImage(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
+  };
+
+  return userData && (
     <div className="bg-white min-h-screen px-6 py-12 font-outfit">
       <div className="max-w-3xl mx-auto border rounded-xl p-8 shadow">
         <div className="text-center">
-          <img
-            src="/images/profile_pic.png"
-            alt="User"
-            className="w-28 h-28 rounded-full mx-auto mb-4 border-4 border-[#6A994E]"
-          />
+          <label htmlFor="image" className="cursor-pointer inline-block">
+            <div className="relative w-28 h-28 mx-auto mb-4">
+              <img
+                src={image ? URL.createObjectURL(image) : userData.image || '/images/profile_pic.png'}
+                alt="User"
+                className="w-28 h-28 rounded-full border-4 border-[#6A994E] object-cover"
+              />
+              {isEdit && (
+                <div className="absolute bottom-0 right-0 bg-white p-1 rounded-full shadow">
+               
+                </div>
+              )}
+            </div>
+            <input type="file" id="image" hidden onChange={(e) => setImage(e.target.files[0])} />
+          </label>
 
           {isEdit ? (
             <input
@@ -56,7 +90,6 @@ const MyProfile = () => {
         </div>
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Email */}
           <div>
             <label className="text-sm font-semibold block mb-1">Email</label>
             {isEdit ? (
@@ -71,7 +104,6 @@ const MyProfile = () => {
             )}
           </div>
 
-          {/* Phone */}
           <div>
             <label className="text-sm font-semibold block mb-1">Phone</label>
             {isEdit ? (
@@ -86,7 +118,6 @@ const MyProfile = () => {
             )}
           </div>
 
-          {/* Address */}
           <div className="sm:col-span-2">
             <label className="text-sm font-semibold block mb-1">Address</label>
             {isEdit ? (
@@ -105,13 +136,10 @@ const MyProfile = () => {
                 />
               </>
             ) : (
-              <p>
-                {userData.address.line1}, {userData.address.line2}
-              </p>
+              <p>{userData.address.line1}, {userData.address.line2}</p>
             )}
           </div>
 
-          {/* Gender */}
           <div>
             <label className="text-sm font-semibold block mb-1">Gender</label>
             {isEdit ? (
@@ -120,16 +148,15 @@ const MyProfile = () => {
                 onChange={(e) => handleChange('gender', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               >
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
+                <option value="Not Selected">Not Selected</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
               </select>
             ) : (
               <p>{userData.gender}</p>
             )}
           </div>
 
-          {/* Birthday */}
           <div>
             <label className="text-sm font-semibold block mb-1">Birthday</label>
             {isEdit ? (
@@ -140,26 +167,29 @@ const MyProfile = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
               />
             ) : (
-              <p>
-                {new Date(userData.dob).toLocaleDateString('en-IN', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </p>
+              <p>{new Date(userData.dob).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'long', year: 'numeric',
+              })}</p>
             )}
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-10 flex justify-center gap-4">
           {isEdit ? (
-            <button
-              onClick={() => setIsEdit(false)}
-              className="bg-[#6A994E] text-white px-6 py-2 rounded-lg hover:bg-green-700"
-            >
-              Save Info
-            </button>
+            <>
+              <button
+                onClick={updateUserProfileData}
+                className="bg-[#6A994E] text-white px-6 py-2 rounded-lg hover:bg-green-700"
+              >
+                Save Info
+              </button>
+              <button
+                onClick={() => { setIsEdit(false); setImage(false); }}
+                className="border border-gray-400 px-6 py-2 rounded-lg hover:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </>
           ) : (
             <button
               onClick={() => setIsEdit(true)}
